@@ -1,0 +1,133 @@
+T0CNT at 0x0000  xxxx.x  0000 to 0000
+T0DATA at 0x0001  xxxx.x  0000 to 0000
+t0con at 0x0002  xxxx.x  0000 to 0000
+mcr at 0x0003  xxxx.x  0000 to 0000
+btcon at 0x000c  xxxx.x  0000 to 0000
+BTCNT at 0x000d  xxxx.x  0000 to 0000
+p0 at 0x0010  xxxx.x  0000 to 0000
+p1 at 0x0011  xxxx.x  0000 to 0000
+p2 at 0x0012  xxxx.x  0000 to 0000
+p0conh at 0x0016  xxxx.x  0000 to 0000
+p0conl at 0x0017  xxxx.x  0000 to 0000
+p0pnd at 0x0018  xxxx.x  0000 to 0000
+p1con at 0x0019  xxxx.x  0000 to 0000
+p2conh at 0x001a  xxxx.x  0000 to 0000
+p2conl at 0x001b  xxxx.x  0000 to 0000
+PWMDATA at 0x0022  xxxx.x  0000 to 0000
+pwmcon at 0x0023  xxxx.x  0000 to 0000
+adcon at 0x0027  xxxx.x  0000 to 0000
+ADDATAH at 0x0028  xxxx.x  0000 to 0000
+ADDATAL at 0x0029  xxxx.x  0000 to 0000
+sys_status at 0x0041  xxxx.x  0000 to 0000
+status_count at 0x0040  xxxx.x  0000 to 0000
+last_status at 0x003f  xxxx.x  0000 to 0000
+AD_12V6_value at 0x003d  xxxx.x  0000 to 0000
+AD_8V4_value at 0x003b  xxxx.x  0000 to 0000
+AD_4V2_value at 0x0039  xxxx.x  0000 to 0000
+time_125us at 0x0038  xxxx.x  0000 to 0000
+time_10ms at 0x0037  xxxx.x  0000 to 0000
+time_charge_10ms at 0x0036  xxxx.x  0000 to 0000
+get_ad_flag at 0x0035  xxxx.x  0000 to 0000
+AD12V6_FLAG at 0x0034  xxxx.x  0000 to 0000
+ms at 0x004b  HJW01.c  115 to 120 
+i at 0x004a  HJW01.c  115 to 120 
+AD_ch at 0x005c  HJW01.c  166 to 178 
+AD_Value at 0x005a  HJW01.c  166 to 178 
+a at 0x0059  HJW01.c  186 to 190 
+b at 0x005b  HJW01.c  186 to 190 
+AD_12_temp at 0x004c  HJW01.c  198 to 276 
+AD_4_temp at 0x004e  HJW01.c  198 to 276 
+AD_8_temp at 0x0050  HJW01.c  198 to 276 
+AD_12_temp_avg at 0x0052  HJW01.c  198 to 276 
+AD_4_temp_avg at 0x0054  HJW01.c  198 to 276 
+AD_8_temp_avg at 0x0056  HJW01.c  198 to 276 
+i at 0x0058  HJW01.c  198 to 276 
+status_temp at 0x0049  HJW01.c  398 to 550 
+#define T0F	   	t0con.bitn.bit0
+#define T0E	   	t0con.bitn.bit1
+#define T0CLR  	t0con.bitn.bit3
+#define T0PS   	t0con.bitn.bit6
+#define LVRE   	mcr.bitn.bit0
+#define DVCLR  	btcon.bitn.bit0
+#define BTCLR  	btcon.bitn.bit1
+#define BTPS   	btcon.bitn.bit2
+#define WDTE   	btcon.bitn.bit4
+#define P00 p0.bitn.bit0
+#define P01 p0.bitn.bit1
+#define P02 p0.bitn.bit2
+#define P03 p0.bitn.bit3
+#define P04 p0.bitn.bit4
+#define P05 p0.bitn.bit5
+#define P06 p0.bitn.bit6
+#define P07 p0.bitn.bit7
+#define P10 p1.bitn.bit0
+#define P11 p1.bitn.bit1
+#define P12 p1.bitn.bit2
+#define P20 p2.bitn.bit0
+#define P21 p2.bitn.bit1
+#define P22 p2.bitn.bit2
+#define P23 p2.bitn.bit3
+#define P24 p2.bitn.bit4
+#define P25 p2.bitn.bit5
+#define P26 p2.bitn.bit6
+#define P04C p0conh.bitn.bit0
+#define P05C p0conh.bitn.bit2
+#define P06C p0conh.bitn.bit4
+#define P07C p0conh.bitn.bit6
+#define P00C p0conl.bitn.bit0
+#define P01C p0conl.bitn.bit2
+#define P02C p0conl.bitn.bit4
+#define P03C p0conl.bitn.bit6
+#define INT0F p0pnd.bitn.bit0
+#define INT0E p0pnd.bitn.bit1
+#define INT1F p0pnd.bitn.bit2
+#define INT1E p0pnd.bitn.bit3
+#define P10C  p1con.bitn.bit0
+#define P11C  p1con.bitn.bit2
+#define P10OD p1con.bitn.bit6
+#define P11OD p1con.bitn.bit7
+#define P24C p2conh.bitn.bit0
+#define P25C p2conh.bitn.bit2
+#define P26C p2conh.bitn.bit4
+#define P20C p2conl.bitn.bit0
+#define P21C p2conl.bitn.bit2
+#define P22C p2conl.bitn.bit4
+#define P23C p2conl.bitn.bit6
+#define PWMIF  	pwmcon.bitn.bit0
+#define PWMIE  	pwmcon.bitn.bit1
+#define PWMCE  	pwmcon.bitn.bit2
+#define PWMCLR 	pwmcon.bitn.bit3
+#define PWMDRS 	pwmcon.bitn.bit4
+#define PWMPS  	pwmcon.bitn.bit6
+#define ADCE   	adcon.bitn.bit0
+#define ADPS   	adcon.bitn.bit1
+#define EOC	   	adcon.bitn.bit3
+#define ADCH   	adcon.bitn.bit4
+#define debug 1
+#define P12V6_ADCH    2
+#define P8V4_ADCH     1
+#define P4V2_ADCH     0
+#define FREE          0
+#define FALUT         1
+#define PRE_CHARGE    2
+#define FULL_CHARGE   3
+#define ALONE_CHARGE  4
+#define FULL          5
+#define STATUS_MAX 1
+#define V_FAULT_MIN   0
+#define V_FREE_MIN    205
+#define V_FAULT_MID   471
+#define V_FAULT_MID_ADD 492
+#define V_PRE_CHARGE  676
+#define V_FREE_MIN    205
+#define V_FAULT_MID   717
+#define V_FAULT_MID_ADD 737
+#define V_PRE_CHARGE  809
+#define V_FULL        864
+#define V_FULL_CHARGE 874
+#define V_FULL_ADD    885
+#define V_FAULT_SUB   926
+#define V_FAULT_MAX   946
+#define V_FREE        1024
+#define AD_4V2_OFF    82
+#define AD_NEXT_OFF    10

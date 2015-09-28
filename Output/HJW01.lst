@@ -1,0 +1,1157 @@
+L 1					; C Compiler for MC68HC05 (COSMIC Software)
+L 2					; Generator V4.1n - 19 Jul 2001
+L 3					; Optimizer V4.1n - 19 Jul 2001
+L 4					; 2 @nosvf @interrupt void SWI_ISR(void)
+L 5					; 3        	{
+L 6						xref.b	_SWI_ISR.L
+L 7						switch	.text
+L 8					1003               _SWI_ISR:
+L 9					; 5        	}
+L 10	[1]	1003	80            	rti	
+L 11					; 7 @nosvf @interrupt void INT1_ISR(void)
+L 12					; 8        	{
+L 13						xref.b	_INT1_ISR.L
+L 14						switch	.text
+L 15					1004               _INT1_ISR:
+L 16					; 9        	  INT1F=0;
+L 17	[1]	1004	1518          	bclr	2,_p0pnd
+L 18					; 11        	}
+L 19	[1]	1006	80            	rti	
+L 20					; 13 @nosvf @interrupt void INT0_ISR(void)
+L 21					; 14        	{
+L 22						xref.b	_INT0_ISR.L
+L 23						switch	.text
+L 24					1007               _INT0_ISR:
+L 25					; 15        	  INT0F=0;
+L 26	[1]	1007	1118          	bclr	0,_p0pnd
+L 27					; 17        	}
+L 28	[1]	1009	80            	rti	
+L 29					; 19 @nosvf @interrupt void T0INT_ISR(void)
+L 30					; 20        	{      	
+L 31						xref.b	_T0INT_ISR.L
+L 32						switch	.text
+L 33					100a               _T0INT_ISR:
+L 34					; 21        	     T0F=0;
+L 35	[1]	100a	1102          	bclr	0,_t0con
+L 36					; 22        T0DATA=62;//125us                
+L 37	[1]	100c	a63e          	lda	#62
+L 38	[1]	100e	b701          	sta	_T0DATA
+L 39					; 23          time_125us++;            
+L 40	[1]	1010	3c38          	inc	_time_125us
+L 41					; 24          if(time_125us>=81)
+L 42	[1]	1012	b638          	lda	_time_125us
+L 43	[1]	1014	a151          	cmp	#81
+L 44	[1]	1016	2504          	blo	L1511
+L 45					; 26                	time_125us=0;
+L 46	[1]	1018	3f38          	clr	_time_125us
+L 47					; 27                 time_10ms++;
+L 48	[1]	101a	3c37          	inc	_time_10ms
+L 49					101c               L1511:
+L 50					; 31        	}
+L 51	[1]	101c	80            	rti	
+L 52					; 33 @nosvf @interrupt void PWMINT_ISR(void)
+L 53					; 34        	{
+L 54						xref.b	_PWMINT_ISR.L
+L 55						switch	.text
+L 56					101d               _PWMINT_ISR:
+L 57					; 36        	}
+L 58	[1]	101d	80            	rti	
+L 59					; 115 void Delay(uint ms) 
+L 60					; 116 {       
+L 61						xref.b	_Delay.L
+L 62						switch	.text
+L 63					101e               _Delay:
+L 64	[1]	101e	b74c          	sta	_Delay.L+1
+L 65	[1]	1020	bf4b          	stx	_Delay.L
+L 66	[1]	1022	200a          	bra	L5021
+L 67					1024               L3021:
+L 68					; 119        	for(i = 0; i<150; i++);           
+L 69	[1]	1024	3f4a          	clr	_Delay.L-1
+L 70					1026               L1121:
+L 71	[1]	1026	3c4a          	inc	_Delay.L-1
+L 72	[1]	1028	b64a          	lda	_Delay.L-1
+L 73	[1]	102a	a196          	cmp	#150
+L 74	[1]	102c	25f8          	blo	L1121
+L 75					102e               L5021:
+L 76					; 118        	while(ms--)
+L 77	[1]	102e	b64b          	lda	_Delay.L
+L 78	[1]	1030	b731          	sta	c_h
+L 79	[1]	1032	be4c          	ldx	_Delay.L+1
+L 80	[1]	1034	9f            	txa	
+L 81	[1]	1035	a001          	sub	#1
+L 82	[1]	1037	b74c          	sta	_Delay.L+1
+L 83	[1]	1039	2402          	bcc	L61
+L 84	[1]	103b	3a4b          	dec	_Delay.L
+L 85					103d               L61:
+L 86	[1]	103d	a300          	cpx	#0
+L 87	[1]	103f	26e3          	bne	L3021
+L 88	[1]	1041	b631          	lda	c_h
+L 89	[1]	1043	26df          	bne	L3021
+L 90					; 120 }
+L 91	[1]	1045	81            	rts	
+L 92					; 122 void SysInit(void)
+L 93					; 123 {
+L 94						switch	.text
+L 95					1046               _SysInit:
+L 96					; 125        	P0CONL = 0xBF;
+L 97	[1]	1046	a6bf          	lda	#191
+L 98	[1]	1048	b717          	sta	_p0conl
+L 99					; 126        	P0CONH = 0xAA;
+L 100	[1]	104a	a6aa          	lda	#170
+L 101	[1]	104c	b716          	sta	_p0conh
+L 102					; 127        	P1CON = 0x0A;
+L 103	[1]	104e	a60a          	lda	#10
+L 104	[1]	1050	b719          	sta	_p1con
+L 105					; 128        	P2CONL = 0xAA;
+L 106	[1]	1052	a6aa          	lda	#170
+L 107	[1]	1054	b71b          	sta	_p2conl
+L 108					; 129        	P2CONH = 0x4A;
+L 109	[1]	1056	a64a          	lda	#74
+L 110	[1]	1058	b71a          	sta	_p2conh
+L 111					; 131        	BTCON = 0XA0; //关看门狗
+L 112	[1]	105a	a6a0          	lda	#160
+L 113	[1]	105c	b70c          	sta	_btcon
+L 114					; 132        	MCR = 0x00;   //LVR关
+L 115	[1]	105e	3f03          	clr	_mcr
+L 116					; 135        	ADCON = 0x82;//Fsys/4  8M/2/4=1M ADC输入时钟
+L 117	[1]	1060	a682          	lda	#130
+L 118	[1]	1062	b727          	sta	_adcon
+L 119					; 137        	T0CON = 0x80;//Fsys/8  8M/2/8=0.5M 定时器计时频率
+L 120	[1]	1064	a680          	lda	#128
+L 121	[1]	1066	b702          	sta	_t0con
+L 122					; 138        	T0E = 1;      //开定时器
+L 123	[1]	1068	1202          	bset	1,_t0con
+L 124					; 143        	sys_status = FREE;
+L 125	[1]	106a	3f41          	clr	_sys_status
+L 126					; 145        	time_125us = 0;
+L 127	[1]	106c	3f38          	clr	_time_125us
+L 128					; 146        	time_10ms = 0;
+L 129	[1]	106e	3f37          	clr	_time_10ms
+L 130					; 147        	time_charge_10ms = 0;
+L 131	[1]	1070	3f36          	clr	_time_charge_10ms
+L 132					; 148        	AD12V6_FLAG = 1;//默认3S模式
+L 133	[1]	1072	a601          	lda	#1
+L 134	[1]	1074	b734          	sta	_AD12V6_FLAG
+L 135					; 149        	get_ad_flag = 0;
+L 136	[1]	1076	3f35          	clr	_get_ad_flag
+L 137					; 151        	       	P12V6_OFF;
+L 138	[1]	1078	1d12          	bclr	6,_p2
+L 139					; 152        	P8V4_OFF;
+L 140	[1]	107a	1d10          	bclr	6,_p0
+L 141					; 153        	P8V4C1_OFF;
+L 142	[1]	107c	1012          	bset	0,_p2
+L 143					; 154        	P4V2_OFF;
+L 144	[1]	107e	1b10          	bclr	5,_p0
+L 145					; 155        	P4V2C1_OFF; 
+L 146	[1]	1080	1212          	bset	1,_p2
+L 147					; 156        	       	LED_OFF;
+L 148	[1]	1082	1810          	bset	4,_p0
+L 149					; 158 }
+L 150	[1]	1084	81            	rts	
+L 151					; 166 int AD_Check(uchar AD_ch)
+L 152					; 167 {
+L 153						xref.b	_AD_Check.L
+L 154						switch	.text
+L 155					1085               _AD_Check:
+L 156					; 169        	ADCH=AD_ch; //选择通道
+L 157	[1]	1085	48            	lsla	
+L 158	[1]	1086	48            	lsla	
+L 159	[1]	1087	48            	lsla	
+L 160	[1]	1088	48            	lsla	
+L 161	[1]	1089	b827          	eor	_adcon
+L 162	[1]	108b	a4f0          	and	#240
+L 163	[1]	108d	b827          	eor	_adcon
+L 164	[1]	108f	b727          	sta	_adcon
+L 165					; 170        	ADPS=1; //AD时钟频率4分频 1MHz
+L 166	[1]	1091	1227          	bset	1,_adcon
+L 167	[1]	1093	1527          	bclr	2,_adcon
+L 168					; 171        	nop();
+L 169	[1]	1095	9d            	nop	
+L 170					; 172        	nop();
+L 171	[1]	1096	9d            	nop	
+L 172					; 173        	nop();
+L 173	[1]	1097	9d            	nop	
+L 174					; 174        	ADCE=1; //启动AD
+L 175	[1]	1098	1027          	bset	0,_adcon
+L 176					109a               L5421:
+L 177					; 175        	while(EOC==0);//AD转换中
+L 178	[1]	109a	0727fd        	brclr	3,_adcon,L5421
+L 179					; 176        	AD_Value=ADDATAH*4 + (ADDATAL&0x03);//获取AD值
+L 180	[1]	109d	b629          	lda	_ADDATAL
+L 181	[1]	109f	a403          	and	#3
+L 182	[1]	10a1	b759          	sta	_AD_Check.L-3
+L 183	[1]	10a3	b628          	lda	_ADDATAH
+L 184	[1]	10a5	ae04          	ldx	#4
+L 185	[1]	10a7	42            	mul	
+L 186	[1]	10a8	bb59          	add	_AD_Check.L-3
+L 187	[1]	10aa	2401          	bcc	L62
+L 188	[1]	10ac	5c            	incx	
+L 189					10ad               L62:
+L 190					; 177        	return AD_Value;
+L 191	[1]	10ad	81            	rts	
+L 192					; 186 int AbsSub(int a,int b)
+L 193					; 187 {
+L 194						xref.b	_AbsSub.L
+L 195						switch	.text
+L 196					10ae               _AbsSub:
+L 197	[1]	10ae	b75a          	sta	_AbsSub.L+1
+L 198	[1]	10b0	bf59          	stx	_AbsSub.L
+L 199					; 188        	if(a>=b) return a-b;
+L 200	[1]	10b2	b05c          	sub	_AbsSub.L+3
+L 201	[1]	10b4	9f            	txa	
+L 202	[1]	10b5	b25b          	sbc	_AbsSub.L+2
+L 203	[1]	10b7	2b0d          	bmi	L5621
+L 204	[1]	10b9	b65a          	lda	_AbsSub.L+1
+L 205	[1]	10bb	b05c          	sub	_AbsSub.L+3
+L 206	[1]	10bd	b748          	sta	c_reg+1
+L 207	[1]	10bf	9f            	txa	
+L 208	[1]	10c0	b25b          	sbc	_AbsSub.L+2
+L 209	[1]	10c2	97            	tax	
+L 210	[1]	10c3	b648          	lda	c_reg+1
+L 211	[1]	10c5	81            	rts	
+L 212					10c6               L5621:
+L 213					; 189        	if(a<b) return b-a;
+L 214	[1]	10c6	b65a          	lda	_AbsSub.L+1
+L 215	[1]	10c8	b05c          	sub	_AbsSub.L+3
+L 216	[1]	10ca	b659          	lda	_AbsSub.L
+L 217	[1]	10cc	b25b          	sbc	_AbsSub.L+2
+L 218	[1]	10ce	2a0d          	bpl	L7621
+L 219	[1]	10d0	b65c          	lda	_AbsSub.L+3
+L 220	[1]	10d2	b05a          	sub	_AbsSub.L+1
+L 221	[1]	10d4	b748          	sta	c_reg+1
+L 222	[1]	10d6	b65b          	lda	_AbsSub.L+2
+L 223	[1]	10d8	b259          	sbc	_AbsSub.L
+L 224	[1]	10da	97            	tax	
+L 225	[1]	10db	b648          	lda	c_reg+1
+L 226					10dd               L7621:
+L 227					; 190 }
+L 228	[1]	10dd	81            	rts	
+L 229					; 198 void GetADValue(void)
+L 230					; 199 {
+L 231						xref.b	_GetADValue.L
+L 232						switch	.text
+L 233					10de               _GetADValue:
+L 234					; 204        	int AD_12_temp_avg=0;
+L 235	[1]	10de	3f52          	clr	_GetADValue.L-7
+L 236	[1]	10e0	3f53          	clr	_GetADValue.L-6
+L 237					; 205        	int AD_4_temp_avg=0;
+L 238	[1]	10e2	3f54          	clr	_GetADValue.L-5
+L 239	[1]	10e4	3f55          	clr	_GetADValue.L-4
+L 240					; 206        	int AD_8_temp_avg=0;
+L 241	[1]	10e6	3f56          	clr	_GetADValue.L-3
+L 242	[1]	10e8	3f57          	clr	_GetADValue.L-2
+L 243					; 208        	uchar i=0;
+L 244	[1]	10ea	3f58          	clr	_GetADValue.L-1
+L 245	[1]	10ec	cc1224        	bra	L3231
+L 246					10ef               L7131:
+L 247					; 214        	       	AD_4_temp = AD_Check(P4V2_ADCH);
+L 248	[1]	10ef	4f            	clra	
+L 249	[1]	10f0	ad93          	jsr	_AD_Check
+L 250	[1]	10f2	b74f          	sta	_GetADValue.L-10
+L 251	[1]	10f4	bf4e          	stx	_GetADValue.L-11
+L 252					; 215        	       	AD_8_temp = AD_Check(P8V4_ADCH);
+L 253	[1]	10f6	a601          	lda	#1
+L 254	[1]	10f8	ad8b          	jsr	_AD_Check
+L 255	[1]	10fa	b751          	sta	_GetADValue.L-8
+L 256	[1]	10fc	bf50          	stx	_GetADValue.L-9
+L 257					; 216        	       	AD_12_temp = AD_Check(P12V6_ADCH);
+L 258	[1]	10fe	a602          	lda	#2
+L 259	[1]	1100	ad83          	jsr	_AD_Check
+L 260	[1]	1102	b74d          	sta	_GetADValue.L-12
+L 261	[1]	1104	bf4c          	stx	_GetADValue.L-13
+L 262					; 219        	       	AD_12_temp = AD_12_temp*2 + AD_12_temp*24/25;//提高精度
+L 263	[1]	1106	bf47          	stx	c_reg
+L 264	[1]	1108	3f31          	clr	c_h
+L 265	[1]	110a	ae18          	ldx	#24
+L 266	[1]	110c	cd162b        	jsr	c_imul
+L 267	[1]	110f	3f31          	clr	c_h
+L 268	[1]	1111	ae19          	ldx	#25
+L 269	[1]	1113	cd15ef        	jsr	c_idiv
+L 270	[1]	1116	b74b          	sta	_GetADValue.L-14
+L 271	[1]	1118	b647          	lda	c_reg
+L 272	[1]	111a	b74a          	sta	_GetADValue.L-15
+L 273	[1]	111c	b64d          	lda	_GetADValue.L-12
+L 274	[1]	111e	be4c          	ldx	_GetADValue.L-13
+L 275	[1]	1120	48            	lsla	
+L 276	[1]	1121	59            	rolx	
+L 277	[1]	1122	bb4b          	add	_GetADValue.L-14
+L 278	[1]	1124	b74d          	sta	_GetADValue.L-12
+L 279	[1]	1126	9f            	txa	
+L 280	[1]	1127	b94a          	adc	_GetADValue.L-15
+L 281	[1]	1129	b74c          	sta	_GetADValue.L-13
+L 282					; 220        	       	AD_8_temp = AD_8_temp<<1;
+L 283	[1]	112b	3851          	lsl	_GetADValue.L-8
+L 284	[1]	112d	3950          	rol	_GetADValue.L-9
+L 285					; 221        	       	AD_4_temp = AD_4_temp<<1;
+L 286	[1]	112f	384f          	lsl	_GetADValue.L-10
+L 287	[1]	1131	394e          	rol	_GetADValue.L-11
+L 288					; 226        	       	       	       	if(AD_12_temp > AD_8_temp)
+L 289	[1]	1133	b651          	lda	_GetADValue.L-8
+L 290	[1]	1135	b04d          	sub	_GetADValue.L-12
+L 291	[1]	1137	b650          	lda	_GetADValue.L-9
+L 292	[1]	1139	b24c          	sbc	_GetADValue.L-13
+L 293	[1]	113b	2a0e          	bpl	L7231
+L 294					; 228        	       	       	       	       	AD_12_temp = AD_12_temp - AD_8_temp;
+L 295	[1]	113d	b64d          	lda	_GetADValue.L-12
+L 296	[1]	113f	b051          	sub	_GetADValue.L-8
+L 297	[1]	1141	b74d          	sta	_GetADValue.L-12
+L 298	[1]	1143	b64c          	lda	_GetADValue.L-13
+L 299	[1]	1145	b250          	sbc	_GetADValue.L-9
+L 300	[1]	1147	b74c          	sta	_GetADValue.L-13
+L 301	[1]	1149	2004          	bra	L1331
+L 302					114b               L7231:
+L 303					; 231        	       	       	       	       	AD_12_temp = 0;
+L 304	[1]	114b	3f4c          	clr	_GetADValue.L-13
+L 305	[1]	114d	3f4d          	clr	_GetADValue.L-12
+L 306					114f               L1331:
+L 307					; 233        	       	       	       	if(AD_8_temp > AD_4_temp)
+L 308	[1]	114f	b64f          	lda	_GetADValue.L-10
+L 309	[1]	1151	b051          	sub	_GetADValue.L-8
+L 310	[1]	1153	b64e          	lda	_GetADValue.L-11
+L 311	[1]	1155	b250          	sbc	_GetADValue.L-9
+L 312	[1]	1157	2a0e          	bpl	L3331
+L 313					; 235        	       	       	       	       	AD_8_temp = AD_8_temp - AD_4_temp;
+L 314	[1]	1159	b651          	lda	_GetADValue.L-8
+L 315	[1]	115b	b04f          	sub	_GetADValue.L-10
+L 316	[1]	115d	b751          	sta	_GetADValue.L-8
+L 317	[1]	115f	b650          	lda	_GetADValue.L-9
+L 318	[1]	1161	b24e          	sbc	_GetADValue.L-11
+L 319	[1]	1163	b750          	sta	_GetADValue.L-9
+L 320	[1]	1165	2004          	bra	L5331
+L 321					1167               L3331:
+L 322					; 239        	       	       	       	       	AD_8_temp = 0;
+L 323	[1]	1167	3f50          	clr	_GetADValue.L-9
+L 324	[1]	1169	3f51          	clr	_GetADValue.L-8
+L 325					116b               L5331:
+L 326					; 241        	       	if(AD_4_temp > AD_4V2_OFF)
+L 327	[1]	116b	b64f          	lda	_GetADValue.L-10
+L 328	[1]	116d	a053          	sub	#83
+L 329	[1]	116f	b64e          	lda	_GetADValue.L-11
+L 330	[1]	1171	a200          	sbc	#0
+L 331	[1]	1173	2b0c          	bmi	L7331
+L 332					; 243        	       	       	AD_4_temp = AD_4_temp - AD_4V2_OFF;//减去恒定偏压  
+L 333	[1]	1175	b64f          	lda	_GetADValue.L-10
+L 334	[1]	1177	a052          	sub	#82
+L 335	[1]	1179	b74f          	sta	_GetADValue.L-10
+L 336	[1]	117b	2408          	bcc	L1431
+L 337	[1]	117d	3a4e          	dec	_GetADValue.L-11
+L 338	[1]	117f	2004          	bra	L1431
+L 339					1181               L7331:
+L 340					; 246        	       	       	AD_4_temp = 0;
+L 341	[1]	1181	3f4e          	clr	_GetADValue.L-11
+L 342	[1]	1183	3f4f          	clr	_GetADValue.L-10
+L 343					1185               L1431:
+L 344					; 250        	       	if(i>0)
+L 345	[1]	1185	3d58          	tst	_GetADValue.L-1
+L 346	[1]	1187	2760          	beq	L3431
+L 347					; 253        	       	       	if((AbsSub(AD_12_temp_avg,AD_12_temp) > AD_NEXT_OFF) || (AbsSub(AD_8_temp_avg,AD_8_temp) > AD_NEXT_OFF) || (AbsSub(AD_4_temp_avg,AD_4_temp) > AD_NEXT_OFF)) 
+L 348	[1]	1189	be4c          	ldx	_GetADValue.L-13
+L 349	[1]	118b	bf5b          	stx	_AbsSub.L+2
+L 350	[1]	118d	b64d          	lda	_GetADValue.L-12
+L 351	[1]	118f	b75c          	sta	_AbsSub.L+3
+L 352	[1]	1191	b653          	lda	_GetADValue.L-6
+L 353	[1]	1193	be52          	ldx	_GetADValue.L-7
+L 354	[1]	1195	cd10ae        	jsr	_AbsSub
+L 355	[1]	1198	a00b          	sub	#11
+L 356	[1]	119a	9f            	txa	
+L 357	[1]	119b	a200          	sbc	#0
+L 358	[1]	119d	2a2c          	bpl	L7431
+L 359	[1]	119f	be50          	ldx	_GetADValue.L-9
+L 360	[1]	11a1	bf5b          	stx	_AbsSub.L+2
+L 361	[1]	11a3	b651          	lda	_GetADValue.L-8
+L 362	[1]	11a5	b75c          	sta	_AbsSub.L+3
+L 363	[1]	11a7	b657          	lda	_GetADValue.L-2
+L 364	[1]	11a9	be56          	ldx	_GetADValue.L-3
+L 365	[1]	11ab	cd10ae        	jsr	_AbsSub
+L 366	[1]	11ae	a00b          	sub	#11
+L 367	[1]	11b0	9f            	txa	
+L 368	[1]	11b1	a200          	sbc	#0
+L 369	[1]	11b3	2a16          	bpl	L7431
+L 370	[1]	11b5	be4e          	ldx	_GetADValue.L-11
+L 371	[1]	11b7	bf5b          	stx	_AbsSub.L+2
+L 372	[1]	11b9	b64f          	lda	_GetADValue.L-10
+L 373	[1]	11bb	b75c          	sta	_AbsSub.L+3
+L 374	[1]	11bd	b655          	lda	_GetADValue.L-4
+L 375	[1]	11bf	be54          	ldx	_GetADValue.L-5
+L 376	[1]	11c1	cd10ae        	jsr	_AbsSub
+L 377	[1]	11c4	a00b          	sub	#11
+L 378	[1]	11c6	9f            	txa	
+L 379	[1]	11c7	a200          	sbc	#0
+L 380	[1]	11c9	2b1e          	bmi	L3431
+L 381					11cb               L7431:
+L 382					; 255        	       	       	       	i=1; 
+L 383	[1]	11cb	a601          	lda	#1
+L 384	[1]	11cd	b758          	sta	_GetADValue.L-1
+L 385					; 256        	       	       	       	AD_12_temp_avg = AD_12_temp;
+L 386	[1]	11cf	be4c          	ldx	_GetADValue.L-13
+L 387	[1]	11d1	bf52          	stx	_GetADValue.L-7
+L 388	[1]	11d3	b64d          	lda	_GetADValue.L-12
+L 389	[1]	11d5	b753          	sta	_GetADValue.L-6
+L 390					; 257        	       	       	       	AD_4_temp_avg = AD_4_temp;
+L 391	[1]	11d7	be4e          	ldx	_GetADValue.L-11
+L 392	[1]	11d9	bf54          	stx	_GetADValue.L-5
+L 393	[1]	11db	b64f          	lda	_GetADValue.L-10
+L 394	[1]	11dd	b755          	sta	_GetADValue.L-4
+L 395					; 258        	       	       	       	AD_8_temp_avg = AD_8_temp;     	       	       	       	
+L 396	[1]	11df	be50          	ldx	_GetADValue.L-9
+L 397	[1]	11e1	bf56          	stx	_GetADValue.L-3
+L 398	[1]	11e3	b651          	lda	_GetADValue.L-8
+L 399	[1]	11e5	b757          	sta	_GetADValue.L-2
+L 400					; 259        	       	       	       	continue;
+L 401	[1]	11e7	203b          	bra	L3231
+L 402					11e9               L3431:
+L 403					; 263        	       	AD_12_temp_avg = (AD_12_temp_avg + AD_12_temp)>>1;
+L 404	[1]	11e9	b653          	lda	_GetADValue.L-6
+L 405	[1]	11eb	bb4d          	add	_GetADValue.L-12
+L 406	[1]	11ed	b748          	sta	c_reg+1
+L 407	[1]	11ef	b652          	lda	_GetADValue.L-7
+L 408	[1]	11f1	b94c          	adc	_GetADValue.L-13
+L 409	[1]	11f3	97            	tax	
+L 410	[1]	11f4	b648          	lda	c_reg+1
+L 411	[1]	11f6	57            	asrx	
+L 412	[1]	11f7	46            	rora	
+L 413	[1]	11f8	b753          	sta	_GetADValue.L-6
+L 414	[1]	11fa	bf52          	stx	_GetADValue.L-7
+L 415					; 264        	       	AD_8_temp_avg = (AD_8_temp_avg + AD_8_temp)>>1;
+L 416	[1]	11fc	b657          	lda	_GetADValue.L-2
+L 417	[1]	11fe	bb51          	add	_GetADValue.L-8
+L 418	[1]	1200	b748          	sta	c_reg+1
+L 419	[1]	1202	b656          	lda	_GetADValue.L-3
+L 420	[1]	1204	b950          	adc	_GetADValue.L-9
+L 421	[1]	1206	97            	tax	
+L 422	[1]	1207	b648          	lda	c_reg+1
+L 423	[1]	1209	57            	asrx	
+L 424	[1]	120a	46            	rora	
+L 425	[1]	120b	b757          	sta	_GetADValue.L-2
+L 426	[1]	120d	bf56          	stx	_GetADValue.L-3
+L 427					; 265        	       	AD_4_temp_avg = (AD_4_temp_avg + AD_4_temp)>>1;
+L 428	[1]	120f	b655          	lda	_GetADValue.L-4
+L 429	[1]	1211	bb4f          	add	_GetADValue.L-10
+L 430	[1]	1213	b748          	sta	c_reg+1
+L 431	[1]	1215	b654          	lda	_GetADValue.L-5
+L 432	[1]	1217	b94e          	adc	_GetADValue.L-11
+L 433	[1]	1219	97            	tax	
+L 434	[1]	121a	b648          	lda	c_reg+1
+L 435	[1]	121c	57            	asrx	
+L 436	[1]	121d	46            	rora	
+L 437	[1]	121e	b755          	sta	_GetADValue.L-4
+L 438	[1]	1220	bf54          	stx	_GetADValue.L-5
+L 439					; 266        	       	i++;
+L 440	[1]	1222	3c58          	inc	_GetADValue.L-1
+L 441					1224               L3231:
+L 442					; 211        	while(i<6)
+L 443	[1]	1224	b658          	lda	_GetADValue.L-1
+L 444	[1]	1226	a106          	cmp	#6
+L 445	[1]	1228	2403cc10ef    	blo	L7131
+L 446					; 270        	if(P12V6_CTRL == 1) 
+L 447	[1]	122d	0d1208        	brclr	6,_p2,L3531
+L 448					; 271        	AD_12V6_value = AD_12_temp_avg;
+L 449	[1]	1230	be52          	ldx	_GetADValue.L-7
+L 450	[1]	1232	bf3d          	stx	_AD_12V6_value
+L 451	[1]	1234	b653          	lda	_GetADValue.L-6
+L 452	[1]	1236	b73e          	sta	_AD_12V6_value+1
+L 453					1238               L3531:
+L 454					; 272        	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1)) || (P8V4_CTRL == 1)) 
+L 455	[1]	1238	0d1203        	brclr	6,_p2,L1631
+L 456	[1]	123b	001203        	brset	0,_p2,L7531
+L 457					123e               L1631:
+L 458	[1]	123e	0d1008        	brclr	6,_p0,L5531
+L 459					1241               L7531:
+L 460					; 273        	AD_8V4_value = AD_8_temp_avg;
+L 461	[1]	1241	be56          	ldx	_GetADValue.L-3
+L 462	[1]	1243	bf3b          	stx	_AD_8V4_value
+L 463	[1]	1245	b657          	lda	_GetADValue.L-2
+L 464	[1]	1247	b73c          	sta	_AD_8V4_value+1
+L 465					1249               L5531:
+L 466					; 274        	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1) && (P4V2_CTRL1 == 1)) || ((P8V4_CTRL == 1) && (P4V2_CTRL1 == 1)) || (P4V2_CTRL == 1))
+L 467	[1]	1249	0d1206        	brclr	6,_p2,L7631
+L 468	[1]	124c	011203        	brclr	0,_p2,L7631
+L 469	[1]	124f	021209        	brset	1,_p2,L5631
+L 470					1252               L7631:
+L 471	[1]	1252	0d1003        	brclr	6,_p0,L5731
+L 472	[1]	1255	021203        	brset	1,_p2,L5631
+L 473					1258               L5731:
+L 474	[1]	1258	0b1008        	brclr	5,_p0,L3631
+L 475					125b               L5631:
+L 476					; 275        	AD_4V2_value = AD_4_temp_avg;  	
+L 477	[1]	125b	be54          	ldx	_GetADValue.L-5
+L 478	[1]	125d	bf39          	stx	_AD_4V2_value
+L 479	[1]	125f	b655          	lda	_GetADValue.L-4
+L 480	[1]	1261	b73a          	sta	_AD_4V2_value+1
+L 481					1263               L3631:
+L 482					; 276 }      	
+L 483	[1]	1263	81            	rts	
+L 484					; 284 void Execute(void)
+L 485					; 285 {
+L 486						switch	.text
+L 487					1264               _Execute:
+L 488					; 287        	P12V6_OFF;
+L 489	[1]	1264	1d12          	bclr	6,_p2
+L 490					; 288        	P8V4_OFF;
+L 491	[1]	1266	1d10          	bclr	6,_p0
+L 492					; 289        	P8V4C1_OFF;
+L 493	[1]	1268	1012          	bset	0,_p2
+L 494					; 290        	P4V2_OFF;
+L 495	[1]	126a	1b10          	bclr	5,_p0
+L 496					; 291        	P4V2C1_OFF; 
+L 497	[1]	126c	1212          	bset	1,_p2
+L 498					; 295        	time_charge_10ms++;
+L 499	[1]	126e	3c36          	inc	_time_charge_10ms
+L 500					; 296        	if(time_charge_10ms >= 100) time_charge_10ms = 0;//1s周期定时
+L 501	[1]	1270	b636          	lda	_time_charge_10ms
+L 502	[1]	1272	a164          	cmp	#100
+L 503	[1]	1274	2502          	blo	L5041
+L 504	[1]	1276	3f36          	clr	_time_charge_10ms
+L 505					1278               L5041:
+L 506					; 297        	if(time_charge_10ms == 95 && sys_status != FREE)//定时采样 在900ms的位置定时采样,在free时需要发两个脉冲
+L 507	[1]	1278	b636          	lda	_time_charge_10ms
+L 508	[1]	127a	a15f          	cmp	#95
+L 509	[1]	127c	2612          	bne	L7041
+L 510	[1]	127e	3d41          	tst	_sys_status
+L 511	[1]	1280	270e          	beq	L7041
+L 512					; 299        	       	if(AD12V6_FLAG == 0)//没有第一颗电池
+L 513	[1]	1282	3d34          	tst	_AD12V6_FLAG
+L 514	[1]	1284	2604          	bne	L1141
+L 515					; 301        	       	       	P8V4_ON; //P8V4导通10ms          	
+L 516	[1]	1286	1c10          	bset	6,_p0
+L 517	[1]	1288	2002          	bra	L3141
+L 518					128a               L1141:
+L 519					; 304        	       	       	P12V6_ON; //P12V6导通10ms        	       	       	       	
+L 520	[1]	128a	1c12          	bset	6,_p2
+L 521					128c               L3141:
+L 522					; 306        	       	get_ad_flag = 1;
+L 523	[1]	128c	a601          	lda	#1
+L 524	[1]	128e	b735          	sta	_get_ad_flag
+L 525					1290               L7041:
+L 526					; 311        	if(sys_status == FULL_CHARGE)
+L 527	[1]	1290	b641          	lda	_sys_status
+L 528	[1]	1292	a103          	cmp	#3
+L 529	[1]	1294	260d          	bne	L5141
+L 530					; 313        	       	if(AD12V6_FLAG == 0)//没有第一颗电池
+L 531	[1]	1296	3d34          	tst	_AD12V6_FLAG
+L 532	[1]	1298	2604          	bne	L7141
+L 533					; 315        	       	       	P8V4_ON;
+L 534	[1]	129a	1c10          	bset	6,_p0
+L 535	[1]	129c	2002          	bra	L1241
+L 536					129e               L7141:
+L 537					; 318        	       	       	P12V6_ON;
+L 538	[1]	129e	1c12          	bset	6,_p2
+L 539					12a0               L1241:
+L 540					; 320        	       	LED_ON;
+L 541	[1]	12a0	1910          	bclr	4,_p0
+L 542					; 321        	       	return;
+L 543	[1]	12a2	81            	rts	
+L 544					12a3               L5141:
+L 545					; 325        	if(sys_status == ALONE_CHARGE)
+L 546	[1]	12a3	b641          	lda	_sys_status
+L 547	[1]	12a5	a104          	cmp	#4
+L 548	[1]	12a7	2650          	bne	L3241
+L 549					; 328        	       	if((AD_12V6_value < V_FULL_ADD) && (AD12V6_FLAG == 1))//第一颗慢充
+L 550	[1]	12a9	b63e          	lda	_AD_12V6_value+1
+L 551	[1]	12ab	a075          	sub	#117
+L 552	[1]	12ad	b63d          	lda	_AD_12V6_value
+L 553	[1]	12af	a203          	sbc	#3
+L 554	[1]	12b1	2411          	bhs	L5241
+L 555	[1]	12b3	b634          	lda	_AD12V6_FLAG
+L 556	[1]	12b5	4a            	deca	
+L 557	[1]	12b6	260c          	bne	L5241
+L 558					; 330        	       	       	if(time_charge_10ms >= 0 && time_charge_10ms < 25) //0 -- 20
+L 559	[1]	12b8	b636          	lda	_time_charge_10ms
+L 560	[1]	12ba	b636          	lda	_time_charge_10ms
+L 561	[1]	12bc	a119          	cmp	#25
+L 562	[1]	12be	2404          	bhs	L5241
+L 563					; 332        	       	       	       	P12V6_ON;
+L 564	[1]	12c0	1c12          	bset	6,_p2
+L 565					; 333        	       	       	       	P8V4C1_ON;
+L 566	[1]	12c2	1112          	bclr	0,_p2
+L 567					12c4               L5241:
+L 568					; 337        	       	if(AD_8V4_value < V_FULL_ADD)//第二颗慢充
+L 569	[1]	12c4	b63c          	lda	_AD_8V4_value+1
+L 570	[1]	12c6	a075          	sub	#117
+L 571	[1]	12c8	b63b          	lda	_AD_8V4_value
+L 572	[1]	12ca	a203          	sbc	#3
+L 573	[1]	12cc	2410          	bhs	L1341
+L 574					; 339        	       	       	if(time_charge_10ms >= 30 && time_charge_10ms < 55) //30 -- 50
+L 575	[1]	12ce	b636          	lda	_time_charge_10ms
+L 576	[1]	12d0	a11e          	cmp	#30
+L 577	[1]	12d2	250a          	blo	L1341
+L 578	[1]	12d4	b636          	lda	_time_charge_10ms
+L 579	[1]	12d6	a137          	cmp	#55
+L 580	[1]	12d8	2404          	bhs	L1341
+L 581					; 341        	       	       	       	P8V4_ON;
+L 582	[1]	12da	1c10          	bset	6,_p0
+L 583					; 342        	       	       	       	P4V2C1_ON;
+L 584	[1]	12dc	1312          	bclr	1,_p2
+L 585					12de               L1341:
+L 586					; 346        	       	if(AD_4V2_value < V_FULL_ADD)//第三颗慢充
+L 587	[1]	12de	b63a          	lda	_AD_4V2_value+1
+L 588	[1]	12e0	a075          	sub	#117
+L 589	[1]	12e2	b639          	lda	_AD_4V2_value
+L 590	[1]	12e4	a203          	sbc	#3
+L 591	[1]	12e6	240e          	bhs	L5341
+L 592					; 348        	       	       	if(time_charge_10ms >= 60 && time_charge_10ms < 85) // 60 -- 80
+L 593	[1]	12e8	b636          	lda	_time_charge_10ms
+L 594	[1]	12ea	a13c          	cmp	#60
+L 595	[1]	12ec	2508          	blo	L5341
+L 596	[1]	12ee	b636          	lda	_time_charge_10ms
+L 597	[1]	12f0	a155          	cmp	#85
+L 598	[1]	12f2	2402          	bhs	L5341
+L 599					; 350        	       	       	       	P4V2_ON;
+L 600	[1]	12f4	1a10          	bset	5,_p0
+L 601					12f6               L5341:
+L 602					; 353        	       	LED_ON;
+L 603	[1]	12f6	1910          	bclr	4,_p0
+L 604					; 354        	       	return;
+L 605	[1]	12f8	81            	rts	
+L 606					12f9               L3241:
+L 607					; 358        	if(sys_status == PRE_CHARGE)
+L 608	[1]	12f9	b641          	lda	_sys_status
+L 609	[1]	12fb	a102          	cmp	#2
+L 610	[1]	12fd	261d          	bne	L1441
+L 611					; 360        	       	if(AD12V6_FLAG == 0)//没有第一颗电池
+L 612	[1]	12ff	3d34          	tst	_AD12V6_FLAG
+L 613	[1]	1301	260c          	bne	L3441
+L 614					; 362        	       	       	if(time_charge_10ms >= 0 && time_charge_10ms < 10) P8V4_ON; //P8V4导通200ms              	       	
+L 615	[1]	1303	b636          	lda	_time_charge_10ms
+L 616	[1]	1305	b636          	lda	_time_charge_10ms
+L 617	[1]	1307	a10a          	cmp	#10
+L 618	[1]	1309	240e          	bhs	L7441
+L 619	[1]	130b	1c10          	bset	6,_p0
+L 620	[1]	130d	200a          	bra	L7441
+L 621					130f               L3441:
+L 622					; 365        	       	       	if(time_charge_10ms >= 0 && time_charge_10ms < 10) P12V6_ON; //P12V6导通200ms            	       	       	       	
+L 623	[1]	130f	b636          	lda	_time_charge_10ms
+L 624	[1]	1311	b636          	lda	_time_charge_10ms
+L 625	[1]	1313	a10a          	cmp	#10
+L 626	[1]	1315	2402          	bhs	L7441
+L 627	[1]	1317	1c12          	bset	6,_p2
+L 628					1319               L7441:
+L 629					; 367        	       	       	       	LED_ON;
+L 630	[1]	1319	1910          	bclr	4,_p0
+L 631					; 368        	       	return;
+L 632	[1]	131b	81            	rts	
+L 633					131c               L1441:
+L 634					; 372        	if(sys_status == FREE)
+L 635	[1]	131c	3d41          	tst	_sys_status
+L 636	[1]	131e	260f          	bne	L3541
+L 637					; 374        	       	if(time_charge_10ms == 95) 
+L 638	[1]	1320	b636          	lda	_time_charge_10ms
+L 639	[1]	1322	a15f          	cmp	#95
+L 640	[1]	1324	2606          	bne	L5541
+L 641					; 376                	       	P8V4_ON; //P8V4导通10ms
+L 642	[1]	1326	1c10          	bset	6,_p0
+L 643					; 377                	 get_ad_flag = 1;
+L 644	[1]	1328	a601          	lda	#1
+L 645	[1]	132a	b735          	sta	_get_ad_flag
+L 646					132c               L5541:
+L 647					; 379        	       	LED_OFF;
+L 648	[1]	132c	1810          	bset	4,_p0
+L 649					; 380        	       	return;
+L 650	[1]	132e	81            	rts	
+L 651					132f               L3541:
+L 652					; 384        	if(sys_status == FALUT || sys_status == FULL)
+L 653	[1]	132f	b641          	lda	_sys_status
+L 654	[1]	1331	4a            	deca	
+L 655	[1]	1332	2706          	beq	L1641
+L 656	[1]	1334	b641          	lda	_sys_status
+L 657	[1]	1336	a105          	cmp	#5
+L 658	[1]	1338	2624          	bne	L7641
+L 659					133a               L1641:
+L 660					; 386        	       	if(sys_status == FALUT)
+L 661	[1]	133a	b641          	lda	_sys_status
+L 662	[1]	133c	4a            	deca	
+L 663	[1]	133d	261d          	bne	L3641
+L 664					; 388                	       	       	if(time_charge_10ms%50 == 0) LED_PORT = !LED_PORT;//故障闪动
+L 665	[1]	133f	b636          	lda	_time_charge_10ms
+L 666	[1]	1341	3f47          	clr	c_reg
+L 667	[1]	1343	3f31          	clr	c_h
+L 668	[1]	1345	ae32          	ldx	#50
+L 669	[1]	1347	cd15ef        	jsr	c_idiv
+L 670	[1]	134a	b631          	lda	c_h
+L 671	[1]	134c	b747          	sta	c_reg
+L 672	[1]	134e	5d            	tstx	
+L 673	[1]	134f	260d          	bne	L7641
+L 674	[1]	1351	3d47          	tst	c_reg
+L 675	[1]	1353	2609          	bne	L7641
+L 676	[1]	1355	b610          	lda	_p0
+L 677	[1]	1357	a810          	eor	#16
+L 678	[1]	1359	b710          	sta	_p0
+L 679	[1]	135b	81            	rts	
+L 680					135c               L3641:
+L 681					; 391        	       	       	LED_OFF;
+L 682	[1]	135c	1810          	bset	4,_p0
+L 683					135e               L7641:
+L 684					; 394        	       	return;
+L 685					; 396 }
+L 686	[1]	135e	81            	rts	
+L 687					; 398 void main(void)
+L 688					; 399 {
+L 689						xref.b	_main.L
+L 690						switch	.text
+L 691					135f               _main:
+L 692					; 403        	SysInit();
+L 693	[1]	135f	cd1046        	jsr	_SysInit
+L 694					; 404        	       	Delay(100);
+L 695	[1]	1362	5f            	clrx	
+L 696	[1]	1363	a664          	lda	#100
+L 697	[1]	1365	cd101e        	jsr	_Delay
+L 698					; 405        	cli();
+L 699	[1]	1368	9a            	cli	
+L 700					1369               L3051:
+L 701					; 408        	       	if(time_10ms >= 1)//时基为10ms
+L 702	[1]	1369	3d37          	tst	_time_10ms
+L 703	[1]	136b	27fc          	beq	L3051
+L 704					; 410        	       	       	time_10ms = 0;
+L 705	[1]	136d	3f37          	clr	_time_10ms
+L 706					; 412        	       	       	Execute();
+L 707	[1]	136f	cd1264        	jsr	_Execute
+L 708					; 414        	       	       	if(get_ad_flag == 1)
+L 709	[1]	1372	b635          	lda	_get_ad_flag
+L 710	[1]	1374	4a            	deca	
+L 711	[1]	1375	26f2          	bne	L3051
+L 712					; 417        	       	       	       	get_ad_flag = 0;
+L 713	[1]	1377	3f35          	clr	_get_ad_flag
+L 714					; 418        	       	       	       	Delay(4);//延时等待电压稳定约2ms
+L 715	[1]	1379	5f            	clrx	
+L 716	[1]	137a	a604          	lda	#4
+L 717	[1]	137c	cd101e        	jsr	_Delay
+L 718					; 419        	       	       	       	GetADValue();
+L 719	[1]	137f	cd10de        	jsr	_GetADValue
+L 720					; 423        	       	       	       	if((AD_8V4_value > V_FREE) || (AD_4V2_value > V_FREE) || ((AD_12V6_value > V_FREE) && (AD12V6_FLAG == 1)))
+L 721	[1]	1382	b63c          	lda	_AD_8V4_value+1
+L 722	[1]	1384	a001          	sub	#1
+L 723	[1]	1386	b63b          	lda	_AD_8V4_value
+L 724	[1]	1388	a204          	sbc	#4
+L 725	[1]	138a	2419          	bhs	L5151
+L 726	[1]	138c	b63a          	lda	_AD_4V2_value+1
+L 727	[1]	138e	a001          	sub	#1
+L 728	[1]	1390	b639          	lda	_AD_4V2_value
+L 729	[1]	1392	a204          	sbc	#4
+L 730	[1]	1394	240f          	bhs	L5151
+L 731	[1]	1396	b63e          	lda	_AD_12V6_value+1
+L 732	[1]	1398	a001          	sub	#1
+L 733	[1]	139a	b63d          	lda	_AD_12V6_value
+L 734	[1]	139c	a204          	sbc	#4
+L 735	[1]	139e	254b          	blo	L3151
+L 736	[1]	13a0	b634          	lda	_AD12V6_FLAG
+L 737	[1]	13a2	4a            	deca	
+L 738	[1]	13a3	2646          	bne	L3151
+L 739					13a5               L5151:
+L 740					; 425        	       	       	       	       	status_temp = FALUT;
+L 741	[1]	13a5	a601          	lda	#1
+L 742	[1]	13a7	b749          	sta	_main.L-1
+L 743					; 426        	       	       	       	       	if(P12V6_CTRL == 1)//3S模式
+L 744	[1]	13a9	0d1226        	brclr	6,_p2,L1251
+L 745					; 428        	       	       	       	       	       	if(AD_12V6_value > V_FREE && AD_8V4_value < V_FREE_MIN && AD_4V2_value < V_FREE_MIN)
+L 746	[1]	13ac	b63e          	lda	_AD_12V6_value+1
+L 747	[1]	13ae	a001          	sub	#1
+L 748	[1]	13b0	b63d          	lda	_AD_12V6_value
+L 749	[1]	13b2	a204          	sbc	#4
+L 750	[1]	13b4	2403cc1585    	blo	L1351
+L 751	[1]	13b9	b63c          	lda	_AD_8V4_value+1
+L 752	[1]	13bb	a0cd          	sub	#205
+L 753	[1]	13bd	b63b          	lda	_AD_8V4_value
+L 754	[1]	13bf	a200          	sbc	#0
+L 755	[1]	13c1	24f3          	bhs	L1351
+L 756	[1]	13c3	b63a          	lda	_AD_4V2_value+1
+L 757	[1]	13c5	a0cd          	sub	#205
+L 758	[1]	13c7	b639          	lda	_AD_4V2_value
+L 759	[1]	13c9	a200          	sbc	#0
+L 760	[1]	13cb	24e9          	bhs	L1351
+L 761					; 430        	       	       	       	       	       	       	status_temp = FREE;
+L 762	[1]	13cd	3f49          	clr	_main.L-1
+L 763	[1]	13cf	cc1585        	bra	L1351
+L 764					13d2               L1251:
+L 765					; 434        	       	       	       	       	       	if(AD_8V4_value > V_FREE && AD_4V2_value < V_FREE_MIN)
+L 766	[1]	13d2	b63c          	lda	_AD_8V4_value+1
+L 767	[1]	13d4	a001          	sub	#1
+L 768	[1]	13d6	b63b          	lda	_AD_8V4_value
+L 769	[1]	13d8	a204          	sbc	#4
+L 770	[1]	13da	25f3          	blo	L1351
+L 771	[1]	13dc	b63a          	lda	_AD_4V2_value+1
+L 772	[1]	13de	a0cd          	sub	#205
+L 773	[1]	13e0	b639          	lda	_AD_4V2_value
+L 774	[1]	13e2	a200          	sbc	#0
+L 775	[1]	13e4	24e9          	bhs	L1351
+L 776					; 436        	       	       	       	       	       	       	status_temp = FREE;
+L 777	[1]	13e6	3f49          	clr	_main.L-1
+L 778	[1]	13e8	cc1585        	bra	L1351
+L 779					13eb               L3151:
+L 780					; 443        	       	       	       	else if((AD_8V4_value>V_FAULT_MAX) || (AD_4V2_value>V_FAULT_MAX) || ((AD_12V6_value>V_FAULT_MAX) && (AD12V6_FLAG == 1)))
+L 781	[1]	13eb	b63c          	lda	_AD_8V4_value+1
+L 782	[1]	13ed	a0b3          	sub	#179
+L 783	[1]	13ef	b63b          	lda	_AD_8V4_value
+L 784	[1]	13f1	a203          	sbc	#3
+L 785	[1]	13f3	2419          	bhs	L5351
+L 786	[1]	13f5	b63a          	lda	_AD_4V2_value+1
+L 787	[1]	13f7	a0b3          	sub	#179
+L 788	[1]	13f9	b639          	lda	_AD_4V2_value
+L 789	[1]	13fb	a203          	sbc	#3
+L 790	[1]	13fd	240f          	bhs	L5351
+L 791	[1]	13ff	b63e          	lda	_AD_12V6_value+1
+L 792	[1]	1401	a0b3          	sub	#179
+L 793	[1]	1403	b63d          	lda	_AD_12V6_value
+L 794	[1]	1405	a203          	sbc	#3
+L 795	[1]	1407	250a          	blo	L3351
+L 796	[1]	1409	b634          	lda	_AD12V6_FLAG
+L 797	[1]	140b	4a            	deca	
+L 798	[1]	140c	2605          	bne	L3351
+L 799					140e               L5351:
+L 800					; 445        	       	       	       	       	status_temp = FALUT;
+L 801	[1]	140e	a601          	lda	#1
+L 802	[1]	1410	cc1583        	bra	LC001
+L 803					1413               L3351:
+L 804					; 448        	       	       	       	else if((AD_8V4_value<V_FAULT_MID) || (AD_4V2_value<V_FAULT_MID) || ((AD_12V6_value<V_FAULT_MID) && (AD12V6_FLAG == 1)))
+L 805	[1]	1413	b63c          	lda	_AD_8V4_value+1
+L 806	[1]	1415	a0d7          	sub	#215
+L 807	[1]	1417	b63b          	lda	_AD_8V4_value
+L 808	[1]	1419	a201          	sbc	#1
+L 809	[1]	141b	2519          	blo	L5451
+L 810	[1]	141d	b63a          	lda	_AD_4V2_value+1
+L 811	[1]	141f	a0d7          	sub	#215
+L 812	[1]	1421	b639          	lda	_AD_4V2_value
+L 813	[1]	1423	a201          	sbc	#1
+L 814	[1]	1425	250f          	blo	L5451
+L 815	[1]	1427	b63e          	lda	_AD_12V6_value+1
+L 816	[1]	1429	a0d7          	sub	#215
+L 817	[1]	142b	b63d          	lda	_AD_12V6_value
+L 818	[1]	142d	a201          	sbc	#1
+L 819	[1]	142f	240a          	bhs	L3451
+L 820	[1]	1431	b634          	lda	_AD12V6_FLAG
+L 821	[1]	1433	4a            	deca	
+L 822	[1]	1434	2605          	bne	L3451
+L 823					1436               L5451:
+L 824					; 450        	       	       	       	       	status_temp = FALUT;
+L 825	[1]	1436	a601          	lda	#1
+L 826	[1]	1438	cc1583        	bra	LC001
+L 827					143b               L3451:
+L 828					; 453        	       	       	       	else if((AD_8V4_value<V_PRE_CHARGE) || (AD_4V2_value<V_PRE_CHARGE) || ((AD_12V6_value<V_PRE_CHARGE) && (AD12V6_FLAG == 1)))
+L 829	[1]	143b	b63c          	lda	_AD_8V4_value+1
+L 830	[1]	143d	a0a4          	sub	#164
+L 831	[1]	143f	b63b          	lda	_AD_8V4_value
+L 832	[1]	1441	a202          	sbc	#2
+L 833	[1]	1443	2519          	blo	L5551
+L 834	[1]	1445	b63a          	lda	_AD_4V2_value+1
+L 835	[1]	1447	a0a4          	sub	#164
+L 836	[1]	1449	b639          	lda	_AD_4V2_value
+L 837	[1]	144b	a202          	sbc	#2
+L 838	[1]	144d	250f          	blo	L5551
+L 839	[1]	144f	b63e          	lda	_AD_12V6_value+1
+L 840	[1]	1451	a0a4          	sub	#164
+L 841	[1]	1453	b63d          	lda	_AD_12V6_value
+L 842	[1]	1455	a202          	sbc	#2
+L 843	[1]	1457	2439          	bhs	L3551
+L 844	[1]	1459	b634          	lda	_AD12V6_FLAG
+L 845	[1]	145b	4a            	deca	
+L 846	[1]	145c	2634          	bne	L3551
+L 847					145e               L5551:
+L 848					; 455        	       	       	       	       	if(sys_status == FALUT)
+L 849	[1]	145e	b641          	lda	_sys_status
+L 850	[1]	1460	4a            	deca	
+L 851	[1]	1461	262a          	bne	L1651
+L 852					; 457        	       	       	       	       	       	if((AD_8V4_value>V_FAULT_MID_ADD) && (AD_4V2_value>V_FAULT_MID_ADD) && ((AD_12V6_value>V_FAULT_MID_ADD) || (AD12V6_FLAG == 0)))//需要满足预充的最小值
+L 853	[1]	1463	b63c          	lda	_AD_8V4_value+1
+L 854	[1]	1465	a0ed          	sub	#237
+L 855	[1]	1467	b63b          	lda	_AD_8V4_value
+L 856	[1]	1469	a201          	sbc	#1
+L 857	[1]	146b	2403cc1585    	blo	L1351
+L 858	[1]	1470	b63a          	lda	_AD_4V2_value+1
+L 859	[1]	1472	a0ed          	sub	#237
+L 860	[1]	1474	b639          	lda	_AD_4V2_value
+L 861	[1]	1476	a201          	sbc	#1
+L 862	[1]	1478	25f3          	blo	L1351
+L 863	[1]	147a	b63e          	lda	_AD_12V6_value+1
+L 864	[1]	147c	a0ed          	sub	#237
+L 865	[1]	147e	b63d          	lda	_AD_12V6_value
+L 866	[1]	1480	a201          	sbc	#1
+L 867	[1]	1482	2404          	bhs	L5651
+L 868	[1]	1484	3d34          	tst	_AD12V6_FLAG
+L 869	[1]	1486	26e5          	bne	L1351
+L 870					1488               L5651:
+L 871					; 458        	       	       	       	       	       	status_temp = PRE_CHARGE;      	       	       	       	       	       	       	       	       	       	
+L 872	[1]	1488	a602          	lda	#2
+L 873	[1]	148a	cc1583        	bra	LC001
+L 874					148d               L1651:
+L 875					; 461        	       	       	       	       	       	status_temp = PRE_CHARGE;      	
+L 876	[1]	148d	a602          	lda	#2
+L 877	[1]	148f	cc1583        	bra	LC001
+L 878					1492               L3551:
+L 879					; 466        	       	       	       	else if((AD_8V4_value<V_FULL_CHARGE) && (AD_4V2_value<V_FULL_CHARGE) && ((AD_12V6_value<V_FULL_CHARGE) || (AD12V6_FLAG == 0)))
+L 880	[1]	1492	b63c          	lda	_AD_8V4_value+1
+L 881	[1]	1494	a06a          	sub	#106
+L 882	[1]	1496	b63b          	lda	_AD_8V4_value
+L 883	[1]	1498	a203          	sbc	#3
+L 884	[1]	149a	241d          	bhs	L3751
+L 885	[1]	149c	b63a          	lda	_AD_4V2_value+1
+L 886	[1]	149e	a06a          	sub	#106
+L 887	[1]	14a0	b639          	lda	_AD_4V2_value
+L 888	[1]	14a2	a203          	sbc	#3
+L 889	[1]	14a4	2413          	bhs	L3751
+L 890	[1]	14a6	b63e          	lda	_AD_12V6_value+1
+L 891	[1]	14a8	a06a          	sub	#106
+L 892	[1]	14aa	b63d          	lda	_AD_12V6_value
+L 893	[1]	14ac	a203          	sbc	#3
+L 894	[1]	14ae	2504          	blo	L5751
+L 895	[1]	14b0	3d34          	tst	_AD12V6_FLAG
+L 896	[1]	14b2	2605          	bne	L3751
+L 897					14b4               L5751:
+L 898					; 468        	       	       	       	       	status_temp = FULL_CHARGE;
+L 899	[1]	14b4	a603          	lda	#3
+L 900	[1]	14b6	cc1583        	bra	LC001
+L 901					14b9               L3751:
+L 902					; 471        	       	       	       	else if((AD_8V4_value>=V_FULL_ADD) && (AD_4V2_value>=V_FULL_ADD) && ((AD_12V6_value>=V_FULL_ADD) || (AD12V6_FLAG == 0)))
+L 903	[1]	14b9	b63c          	lda	_AD_8V4_value+1
+L 904	[1]	14bb	a075          	sub	#117
+L 905	[1]	14bd	b63b          	lda	_AD_8V4_value
+L 906	[1]	14bf	a203          	sbc	#3
+L 907	[1]	14c1	254b          	blo	L1061
+L 908	[1]	14c3	b63a          	lda	_AD_4V2_value+1
+L 909	[1]	14c5	a075          	sub	#117
+L 910	[1]	14c7	b639          	lda	_AD_4V2_value
+L 911	[1]	14c9	a203          	sbc	#3
+L 912	[1]	14cb	2541          	blo	L1061
+L 913	[1]	14cd	b63e          	lda	_AD_12V6_value+1
+L 914	[1]	14cf	a075          	sub	#117
+L 915	[1]	14d1	b63d          	lda	_AD_12V6_value
+L 916	[1]	14d3	a203          	sbc	#3
+L 917	[1]	14d5	2404          	bhs	L3061
+L 918	[1]	14d7	3d34          	tst	_AD12V6_FLAG
+L 919	[1]	14d9	2633          	bne	L1061
+L 920					14db               L3061:
+L 921					; 473        	       	       	       	       	if(sys_status == FALUT)//上一状态为fault，除非所有电压值均低于 V_FAULT_SUB
+L 922	[1]	14db	b641          	lda	_sys_status
+L 923	[1]	14dd	4a            	deca	
+L 924	[1]	14de	262a          	bne	L5061
+L 925					; 475        	       	       	       	       	       	if((AD_8V4_value<V_FAULT_SUB) && (AD_4V2_value<V_FAULT_SUB) && ((AD_12V6_value<V_FAULT_SUB) || (AD12V6_FLAG == 0)))
+L 926	[1]	14e0	b63c          	lda	_AD_8V4_value+1
+L 927	[1]	14e2	a09e          	sub	#158
+L 928	[1]	14e4	b63b          	lda	_AD_8V4_value
+L 929	[1]	14e6	a203          	sbc	#3
+L 930	[1]	14e8	2483          	bhs	L1351
+L 931	[1]	14ea	b63a          	lda	_AD_4V2_value+1
+L 932	[1]	14ec	a09e          	sub	#158
+L 933	[1]	14ee	b639          	lda	_AD_4V2_value
+L 934	[1]	14f0	a203          	sbc	#3
+L 935	[1]	14f2	2503cc1585    	bhs	L1351
+L 936	[1]	14f7	b63e          	lda	_AD_12V6_value+1
+L 937	[1]	14f9	a09e          	sub	#158
+L 938	[1]	14fb	b63d          	lda	_AD_12V6_value
+L 939	[1]	14fd	a203          	sbc	#3
+L 940	[1]	14ff	2403cc1581    	blo	L3461
+L 941	[1]	1504	3d34          	tst	_AD12V6_FLAG
+L 942	[1]	1506	267d          	bne	L1351
+L 943					; 476        	       	       	       	       	       	       	status_temp = ALONE_CHARGE;
+L 944	[1]	1508	2077          	bra	L3461
+L 945					150a               L5061:
+L 946					; 479        	       	       	       	       	       	status_temp = FULL;
+L 947	[1]	150a	a605          	lda	#5
+L 948	[1]	150c	2075          	bra	LC001
+L 949					150e               L1061:
+L 950					; 483        	       	       	       	else if((AD_8V4_value>=V_FULL) || (AD_4V2_value>=V_FULL) || ((AD_12V6_value>=V_FULL) && (AD12V6_FLAG == 1)))
+L 951	[1]	150e	b63c          	lda	_AD_8V4_value+1
+L 952	[1]	1510	a060          	sub	#96
+L 953	[1]	1512	b63b          	lda	_AD_8V4_value
+L 954	[1]	1514	a203          	sbc	#3
+L 955	[1]	1516	2419          	bhs	L1261
+L 956	[1]	1518	b63a          	lda	_AD_4V2_value+1
+L 957	[1]	151a	a060          	sub	#96
+L 958	[1]	151c	b639          	lda	_AD_4V2_value
+L 959	[1]	151e	a203          	sbc	#3
+L 960	[1]	1520	240f          	bhs	L1261
+L 961	[1]	1522	b63e          	lda	_AD_12V6_value+1
+L 962	[1]	1524	a060          	sub	#96
+L 963	[1]	1526	b63d          	lda	_AD_12V6_value
+L 964	[1]	1528	a203          	sbc	#3
+L 965	[1]	152a	2559          	blo	L1351
+L 966	[1]	152c	b634          	lda	_AD12V6_FLAG
+L 967	[1]	152e	4a            	deca	
+L 968	[1]	152f	2654          	bne	L1351
+L 969					1531               L1261:
+L 970					; 485        	       	       	       	       	if(sys_status == FULL)//上一状态为full,为电压跌落的，必须判断是否有一路电压值小于V_FULL
+L 971	[1]	1531	b641          	lda	_sys_status
+L 972	[1]	1533	a105          	cmp	#5
+L 973	[1]	1535	2623          	bne	L5261
+L 974					; 487        	       	       	       	       	       	if((AD_8V4_value<V_FULL) || (AD_4V2_value<V_FULL) || ((AD_12V6_value<V_FULL) && (AD12V6_FLAG == 1)))
+L 975	[1]	1537	b63c          	lda	_AD_8V4_value+1
+L 976	[1]	1539	a060          	sub	#96
+L 977	[1]	153b	b63b          	lda	_AD_8V4_value
+L 978	[1]	153d	a203          	sbc	#3
+L 979	[1]	153f	2540          	blo	L3461
+L 980	[1]	1541	b63a          	lda	_AD_4V2_value+1
+L 981	[1]	1543	a060          	sub	#96
+L 982	[1]	1545	b639          	lda	_AD_4V2_value
+L 983	[1]	1547	a203          	sbc	#3
+L 984	[1]	1549	2536          	blo	L3461
+L 985	[1]	154b	b63e          	lda	_AD_12V6_value+1
+L 986	[1]	154d	a060          	sub	#96
+L 987	[1]	154f	b63d          	lda	_AD_12V6_value
+L 988	[1]	1551	a203          	sbc	#3
+L 989	[1]	1553	2430          	bhs	L1351
+L 990	[1]	1555	b634          	lda	_AD12V6_FLAG
+L 991	[1]	1557	4a            	deca	
+L 992					; 488        	       	       	       	       	       	       	status_temp = ALONE_CHARGE;
+L 993	[1]	1558	2025          	bra	LC003
+L 994					155a               L5261:
+L 995					; 489        	       	       	       	       	}else if(sys_status == FALUT)//上一状态为fault，除非所有电压值均低于 V_FAULT_SUB
+L 996	[1]	155a	b641          	lda	_sys_status
+L 997	[1]	155c	4a            	deca	
+L 998	[1]	155d	2622          	bne	L3461
+L 999					; 491        	       	       	       	       	       	if((AD_8V4_value<V_FAULT_SUB) && (AD_4V2_value<V_FAULT_SUB) && ((AD_12V6_value<V_FAULT_SUB) || (AD12V6_FLAG == 0)))
+L 1000	[1]	155f	b63c          	lda	_AD_8V4_value+1
+L 1001	[1]	1561	a09e          	sub	#158
+L 1002	[1]	1563	b63b          	lda	_AD_8V4_value
+L 1003	[1]	1565	a203          	sbc	#3
+L 1004	[1]	1567	241c          	bhs	L1351
+L 1005	[1]	1569	b63a          	lda	_AD_4V2_value+1
+L 1006	[1]	156b	a09e          	sub	#158
+L 1007	[1]	156d	b639          	lda	_AD_4V2_value
+L 1008	[1]	156f	a203          	sbc	#3
+L 1009	[1]	1571	2412          	bhs	L1351
+L 1010	[1]	1573	b63e          	lda	_AD_12V6_value+1
+L 1011	[1]	1575	a09e          	sub	#158
+L 1012	[1]	1577	b63d          	lda	_AD_12V6_value
+L 1013	[1]	1579	a203          	sbc	#3
+L 1014	[1]	157b	2504          	blo	L3461
+L 1015	[1]	157d	3d34          	tst	_AD12V6_FLAG
+L 1016					157f               LC003:
+L 1017	[1]	157f	2604          	bne	L1351
+L 1018					1581               L3461:
+L 1019					; 492        	       	       	       	       	       	       	status_temp = ALONE_CHARGE;
+L 1020					; 495        	       	       	       	       	       	status_temp = ALONE_CHARGE;
+L 1021	[1]	1581	a604          	lda	#4
+L 1022					1583               LC001:
+L 1023	[1]	1583	b749          	sta	_main.L-1
+L 1024					1585               L1351:
+L 1025					; 500        	       	       	       	if(status_temp == last_status)//当前状态与上次状态相同，则状态值自加
+L 1026	[1]	1585	b649          	lda	_main.L-1
+L 1027	[1]	1587	b13f          	cmp	_last_status
+L 1028	[1]	1589	2602          	bne	L7461
+L 1029					; 502        	       	       	       	       	status_count++;
+L 1030	[1]	158b	3c40          	inc	_status_count
+L 1031					158d               L7461:
+L 1032					; 505        	       	       	       	if(status_temp != last_status)//当前状态与上次状态不同，则状态计数为1，并修改上次状态
+L 1033	[1]	158d	b13f          	cmp	_last_status
+L 1034	[1]	158f	2708          	beq	L1561
+L 1035					; 507        	       	       	       	       	status_count = 1;
+L 1036	[1]	1591	a601          	lda	#1
+L 1037	[1]	1593	b740          	sta	_status_count
+L 1038					; 508        	       	       	       	       	last_status = status_temp;
+L 1039	[1]	1595	b649          	lda	_main.L-1
+L 1040	[1]	1597	b73f          	sta	_last_status
+L 1041					1599               L1561:
+L 1042					; 511        	       	       	       	if((sys_status == FREE) && (status_temp != FREE) && (status_count >= STATUS_MAX))
+L 1043	[1]	1599	3d41          	tst	_sys_status
+L 1044	[1]	159b	2636          	bne	L3561
+L 1045	[1]	159d	3d49          	tst	_main.L-1
+L 1046	[1]	159f	2732          	beq	L3561
+L 1047	[1]	15a1	3d40          	tst	_status_count
+L 1048	[1]	15a3	272e          	beq	L3561
+L 1049					; 514        	       	       	       	       	P12V6_OFF;
+L 1050	[1]	15a5	1d12          	bclr	6,_p2
+L 1051					; 515        	       	       	       	       	P8V4_OFF;
+L 1052	[1]	15a7	1d10          	bclr	6,_p0
+L 1053					; 516        	       	       	       	       	P8V4C1_OFF;
+L 1054	[1]	15a9	1012          	bset	0,_p2
+L 1055					; 517        	       	       	       	       	P4V2_OFF;
+L 1056	[1]	15ab	1b10          	bclr	5,_p0
+L 1057					; 518        	       	       	       	       	P4V2C1_OFF; 
+L 1058	[1]	15ad	1212          	bset	1,_p2
+L 1059					; 519        	       	       	       	       	Delay(600);//延时待完全插入
+L 1060	[1]	15af	a658          	lda	#88
+L 1061	[1]	15b1	ae02          	ldx	#2
+L 1062	[1]	15b3	cd101e        	jsr	_Delay
+L 1063					; 521        	       	       	       	       	P12V6_ON;
+L 1064	[1]	15b6	1c12          	bset	6,_p2
+L 1065					; 522        	       	       	       	       	Delay(20);
+L 1066	[1]	15b8	5f            	clrx	
+L 1067	[1]	15b9	a614          	lda	#20
+L 1068	[1]	15bb	cd101e        	jsr	_Delay
+L 1069					; 523        	       	       	       	       	GetADValue();//获取采样值
+L 1070	[1]	15be	cd10de        	jsr	_GetADValue
+L 1071					; 524        	       	       	       	       	if(AD_12V6_value < V_FREE)//表示有3S
+L 1072	[1]	15c1	b63d          	lda	_AD_12V6_value
+L 1073	[1]	15c3	a104          	cmp	#4
+L 1074	[1]	15c5	240a          	bhs	L5561
+L 1075					; 526        	       	       	       	       	       	AD12V6_FLAG = 1;
+L 1076	[1]	15c7	a601          	lda	#1
+L 1077	[1]	15c9	b734          	sta	_AD12V6_FLAG
+L 1078					; 527        	       	       	       	       	       	status_temp = FULL;//如果是3S模式，将系统状态设为full重新采集，避免LED乱闪
+L 1079	[1]	15cb	a605          	lda	#5
+L 1080	[1]	15cd	b749          	sta	_main.L-1
+L 1081	[1]	15cf	2002          	bra	L3561
+L 1082					15d1               L5561:
+L 1083					; 530        	       	       	       	       	       	AD12V6_FLAG = 0;
+L 1084	[1]	15d1	3f34          	clr	_AD12V6_FLAG
+L 1085					15d3               L3561:
+L 1086					; 534        	       	       	       	if((status_count >= STATUS_MAX))               	       	       	       	
+L 1087	[1]	15d3	3d40          	tst	_status_count
+L 1088	[1]	15d5	2706          	beq	L1661
+L 1089					; 536        	       	       	       	       	status_count = 0;
+L 1090	[1]	15d7	3f40          	clr	_status_count
+L 1091					; 537        	       	       	       	       	sys_status = status_temp;
+L 1092	[1]	15d9	b649          	lda	_main.L-1
+L 1093	[1]	15db	b741          	sta	_sys_status
+L 1094					15dd               L1661:
+L 1095					; 540        	       	       	       	       	       	       	       	if(sys_status == FREE)
+L 1096	[1]	15dd	3d41          	tst	_sys_status
+L 1097	[1]	15df	2703cc1369    	bne	L3051
+L 1098					; 542                	       	       	       	       	AD12V6_FLAG = 0;//改为默认2S模式，避免从free状态到充电状态出现fault modfied by LC 2015.07.30 21:47
+L 1099	[1]	15e4	3f34          	clr	_AD12V6_FLAG
+L 1100					; 544        	       	       	       	       	AD_12V6_value =  V_FREE;
+L 1101	[1]	15e6	a604          	lda	#4
+L 1102	[1]	15e8	b73d          	sta	_AD_12V6_value
+L 1103	[1]	15ea	3f3e          	clr	_AD_12V6_value+1
+L 1104	[1]	15ec	cc1369        	bra	L3051
+L 1105						xdef	_main
+L 1106						xdef	_Execute
+L 1107						xdef	_GetADValue
+L 1108						xdef	_AbsSub
+L 1109						xdef	_AD_Check
+L 1110						xdef	_SysInit
+L 1111						xdef	_Delay
+L 1112						xdef	_PWMINT_ISR
+L 1113						xdef	_T0INT_ISR
+L 1114						xdef	_INT0_ISR
+L 1115						xdef	_INT1_ISR
+L 1116						xdef	_SWI_ISR
+L 1117						switch	.ubsct
+L 1118					0034               _AD12V6_FLAG:
+L 1119	[1]	0034	00            	ds.b	1
+L 1120						xdef	_AD12V6_FLAG
+L 1121					0035               _get_ad_flag:
+L 1122	[1]	0035	00            	ds.b	1
+L 1123						xdef	_get_ad_flag
+L 1124					0036               _time_charge_10ms:
+L 1125	[1]	0036	00            	ds.b	1
+L 1126						xdef	_time_charge_10ms
+L 1127					0037               _time_10ms:
+L 1128	[1]	0037	00            	ds.b	1
+L 1129						xdef	_time_10ms
+L 1130					0038               _time_125us:
+L 1131	[1]	0038	00            	ds.b	1
+L 1132						xdef	_time_125us
+L 1133					0039               _AD_4V2_value:
+L 1134	[1]	0039	0000          	ds.b	2
+L 1135						xdef	_AD_4V2_value
+L 1136					003b               _AD_8V4_value:
+L 1137	[1]	003b	0000          	ds.b	2
+L 1138						xdef	_AD_8V4_value
+L 1139					003d               _AD_12V6_value:
+L 1140	[1]	003d	0000          	ds.b	2
+L 1141						xdef	_AD_12V6_value
+L 1142					003f               _last_status:
+L 1143	[1]	003f	00            	ds.b	1
+L 1144						xdef	_last_status
+L 1145					0040               _status_count:
+L 1146	[1]	0040	00            	ds.b	1
+L 1147						xdef	_status_count
+L 1148					0041               _sys_status:
+L 1149	[1]	0041	00            	ds.b	1
+L 1150						xdef	_sys_status
+L 1151						xref.b	c_reg
+L 1152						xref.b	c_h
+L 1153						xref	c_cdiv
+L 1154						xref	c_idiv
+L 1155						xref	c_imul
+L 1156						xref.b	_AbsSub.L
+L 1157						end

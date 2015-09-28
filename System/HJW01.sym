@@ -1,0 +1,158 @@
+
+Map of System\HJW01.h05 from link file mc_com.lkf - Wed Aug 05 23:16:41 2015
+
+
+                               --------
+                               Segments
+                               --------
+
+start 00001003 end 00001688 length  1669 segment CODE
+start 00001688 end 00001688 length     0 segment .const
+start 00000030 end 00000030 length     0 segment ZPAGE
+start 00000030 end 00000049 length    25 segment UZPAGE
+start 00000030 end 00000030 length     0 segment IDATA
+start 00000030 end 00000030 length     0 segment UDATA
+start 00000049 end 0000005d length    20 segment .share
+start 00000000 end 0000141e length  5150 segment .debug
+start 00001ff4 end 00002000 length    12 segment .const
+
+
+                               -------
+                               Modules
+                               -------
+
+D:\WinScopeIDE_v0.19bt\WinC_V\Lib\crts.o:
+start 00000030 end 00000034 length     4 section UZPAGE (.ubsct)
+
+HJW01.o:
+start 00001003 end 000015ef length  1516 section CODE (.text)
+start 00000034 end 00000042 length    14 section UZPAGE (.ubsct)
+start 00000000 end 0000141e length  5150 section .debug
+
+(D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o:
+start 000015ef end 0000162b length    60 section CODE (.text)
+
+(D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)imul.o:
+start 0000162b end 0000164c length    33 section CODE (.text)
+
+(D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)lacc.o:
+start 00000042 end 00000047 length     5 section UZPAGE (.ubsct)
+
+(D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)ireg.o:
+start 00000047 end 00000049 length     2 section UZPAGE (.ubsct)
+
+(D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)udiv.o:
+start 0000164c end 00001688 length    60 section CODE (.text)
+
+D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o:
+start 00001ff4 end 00002000 length    12 section .const
+
+
+                             ------------
+                             Shared areas
+                             ------------
+
+HJW01.o:
+_AD_Check       00000059-0000005c (3,1)
+_AbsSub         00000059-0000005c (0,4)
+_Delay          0000004a-0000004c (1,2)
+_GetADValue     0000004a-00000058 (15,0)
+_main           00000049-00000049 (1,0)
+
+Stack size: 11
+
+
+                               -------
+                               Symbols
+                               -------
+
+_AD12V6_FLAG        00000034   defined in HJW01.o section UZPAGE (.ubsct)
+_ADDATAH            00000028   defined in HJW01.o
+_ADDATAL            00000029   defined in HJW01.o
+_AD_12V6_value      0000003d   defined in HJW01.o section UZPAGE (.ubsct)
+_AD_4V2_value       00000039   defined in HJW01.o section UZPAGE (.ubsct)
+_AD_8V4_value       0000003b   defined in HJW01.o section UZPAGE (.ubsct)
+_AD_Check           00001085   defined in HJW01.o section CODE (.text)
+_AD_Check.L         0000005c   defined in linker section .share
+                               used in HJW01.o
+_AbsSub             000010ae   defined in HJW01.o section CODE (.text)
+_AbsSub.L           00000059   defined in linker section .share
+                               used in HJW01.o
+_BTCNT              0000000d   defined in HJW01.o
+_Delay              0000101e   defined in HJW01.o section CODE (.text)
+_Delay.L            0000004b   defined in linker section .share
+                               used in HJW01.o
+_Execute            00001264   defined in HJW01.o section CODE (.text)
+_GetADValue         000010de   defined in HJW01.o section CODE (.text)
+_GetADValue.L       00000059   defined in linker section .share
+                               used in HJW01.o
+_INT0_ISR           00001007   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_INT0_ISR.L         0000005d   defined in linker section .share
+                               *** not used ***
+_INT1_ISR           00001004   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_INT1_ISR.L         0000005d   defined in linker section .share
+                               *** not used ***
+_PWMDATA            00000022   defined in HJW01.o
+_PWMINT_ISR         0000101d   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_PWMINT_ISR.L       0000005d   defined in linker section .share
+                               *** not used ***
+_SWI_ISR            00001003   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_SWI_ISR.L          0000005d   defined in linker section .share
+                               *** not used ***
+_SysInit            00001046   defined in HJW01.o section CODE (.text)
+_T0CNT              00000000   defined in HJW01.o
+_T0DATA             00000001   defined in HJW01.o
+_T0INT_ISR          0000100a   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_T0INT_ISR.L        0000005d   defined in linker section .share
+                               *** not used ***
+_adcon              00000027   defined in HJW01.o
+_btcon              0000000c   defined in HJW01.o
+_get_ad_flag        00000035   defined in HJW01.o section UZPAGE (.ubsct)
+_last_status        0000003f   defined in HJW01.o section UZPAGE (.ubsct)
+_main               0000135f   defined in HJW01.o section CODE (.text)
+                               used in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o
+_main.L             0000004a   defined in linker section .share
+                               used in HJW01.o
+_mcr                00000003   defined in HJW01.o
+_p0                 00000010   defined in HJW01.o
+_p0conh             00000016   defined in HJW01.o
+_p0conl             00000017   defined in HJW01.o
+_p0pnd              00000018   defined in HJW01.o
+_p1                 00000011   defined in HJW01.o
+_p1con              00000019   defined in HJW01.o
+_p2                 00000012   defined in HJW01.o
+_p2conh             0000001a   defined in HJW01.o
+_p2conl             0000001b   defined in HJW01.o
+_pwmcon             00000023   defined in HJW01.o
+_status_count       00000040   defined in HJW01.o section UZPAGE (.ubsct)
+_sys_status         00000041   defined in HJW01.o section UZPAGE (.ubsct)
+_t0con              00000002   defined in HJW01.o
+_time_10ms          00000037   defined in HJW01.o section UZPAGE (.ubsct)
+_time_125us         00000038   defined in HJW01.o section UZPAGE (.ubsct)
+_time_charge_10ms   00000036   defined in HJW01.o section UZPAGE (.ubsct)
+_vectab             00001ff4   defined in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\vec_x224.o section .const
+                               *** not used ***
+c_h                 00000031   defined in D:\WinScopeIDE_v0.19bt\WinC_V\Lib\crts.o section UZPAGE (.ubsct)
+                               used in HJW01.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)imul.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)udiv.o
+c_idiv              000015ef   defined in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o section CODE (.text)
+                               used in HJW01.o
+c_imul              0000162b   defined in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)imul.o section CODE (.text)
+                               used in HJW01.o
+c_lacc              00000042   defined in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)lacc.o section UZPAGE (.ubsct)
+                               used in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)udiv.o
+c_reg               00000047   defined in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)ireg.o section UZPAGE (.ubsct)
+                               used in HJW01.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)imul.o
+                                       (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)udiv.o
+c_udiv              0000164c   defined in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)udiv.o section CODE (.text)
+                               used in (D:\WinScopeIDE_v0.19bt\WinC_V\Lib\libm.h05)idiv.o
