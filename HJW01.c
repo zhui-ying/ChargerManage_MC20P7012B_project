@@ -1,11 +1,7 @@
-
-//modfied by LC 2015.08.03 23:32
-//增加周期变动功能，在故障和充满状态下，采样周期由原来的1s变为2.5s
-//改变全充状态判断逻辑，当全部小于 V_FULL_ADD 时就为全充，并增加缓冲到V_FULL的判断
-//初始化默认状态改为2S模式
-//end by LC 2015.08.03 23:32
+//更改V_FREE值为5V modfied by LC 2015.08.05 23:10
 
 #include "reg_24.h"
+
 
 #define cli()  _asm("cli")
 #define sei()  _asm("sei")
@@ -72,9 +68,9 @@ volatile uchar sys_status;
 #define ALONE_CHARGE  4//单冲
 #define FULL          5//充满
 
-//#define STATUS_MAX 1//到这个 计数次数切换
-//volatile uchar status_count;//同一状态连续计数值
-//volatile uchar last_status;
+#define STATUS_MAX 1//到这个 计数次数切换
+volatile uchar status_count;//同一状态连续计数值
+volatile uchar last_status;
 
 //电压阈值定义,阈值与实际电压值偏高约0.12V
 #define V_FAULT_MIN   0  //0V 
@@ -89,11 +85,11 @@ volatile uchar sys_status;
 // #define V_PRE_CHARGE  809// 3.95*1024/5 3V
 
 #define V_FULL        864//4.24*1024/5 4.24V //改为4.22V modfied by LC 2015.07.30 22:23
-//#define V_FULL_CHARGE 874   //4.27新增串冲电压，增加充电速度add by LC 2015.07.30 22:22
+#define V_FULL_CHARGE 874   //4.27新增串冲电压，增加充电速度add by LC 2015.07.30 22:22
 #define V_FULL_ADD    885//4.32V 充满到充电状态有0.08V缓冲
 #define V_FAULT_SUB   926//4.44V 故障到取消故障 0.08V   //改为4.52V modfied by LC 2015.07.30 22:07
 #define V_FAULT_MAX   946//4.52*1024/5 4.52V //大于该值判定为过压故障  //改为4.62V 946 modfied by LC 2015.07.30 22:07
-#define V_FREE        1229// 6*1024/5  6V
+#define V_FREE        1024// 6*1024/5  6V  //又原来的6V阈值改为5V 6V处于2S和3S判断临界点上，太危险了 add by LC 2015.08.05 23:07
 
 #define AD_4V2_OFF    82// 0.4*1024/5  最后一个电压恒定偏移量
 #define AD_NEXT_OFF    10//0.05*1024/5  0.05V 单次采样与平均值的压差不能超过0.05V
@@ -106,8 +102,7 @@ volatile uchar time_125us;
 volatile uchar time_10ms;
 // volatile uchar time_free_10ms;//空缺模式下的计数器0 -- 100
 // volatile uchar time_full_10ms;//充满和故障模式下的计数器
-volatile uchar time_charge_10ms;//充电计数器
-volatile uchar time_charge_total;//充电波形以及采样周期
+volatile uchar time_charge_10ms;//全充模式下的计数器
 // volatile uchar time_alcharge_10ms;//单充模式下的计数器
 // volatile uchar time_pre_10ms;//预充模式下的计时器
 
@@ -150,8 +145,7 @@ void SysInit(void)
        	time_125us = 0;
        	time_10ms = 0;
        	time_charge_10ms = 0;
-		time_charge_total = 100;
-       	AD12V6_FLAG = 0;//默认2S模式
+       	AD12V6_FLAG = 1;//默认3S模式
        	get_ad_flag = 0;
        	       	
        	       	P12V6_OFF;
@@ -222,7 +216,7 @@ void GetADValue(void)
        	       	AD_12_temp = AD_Check(P12V6_ADCH);
        	       	
        	         //    	AD_12_temp = AD_12_temp*3;
-       	       	AD_12_temp = AD_12_temp*2 + AD_12_temp*24/25;//提高精度 
+       	       	AD_12_temp = AD_12_temp*2 + AD_12_temp*24/25;//提高精度
        	       	AD_8_temp = AD_8_temp<<1;
        	       	AD_4_temp = AD_4_temp<<1;
        	       	
@@ -275,9 +269,9 @@ void GetADValue(void)
        	//根据当前输出状态更新有效AD值      	
        	if(P12V6_CTRL == 1) 
        	AD_12V6_value = AD_12_temp_avg;
-     //  	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1)) || (P8V4_CTRL == 1)) 
+       	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1)) || (P8V4_CTRL == 1)) 
        	AD_8V4_value = AD_8_temp_avg;
-    //   	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1) && (P4V2_CTRL1 == 1)) || ((P8V4_CTRL == 1) && (P4V2_CTRL1 == 1)) || (P4V2_CTRL == 1))
+       	if(((P12V6_CTRL == 1) && (P8V4_CTRL1 == 1) && (P4V2_CTRL1 == 1)) || ((P8V4_CTRL == 1) && (P4V2_CTRL1 == 1)) || (P4V2_CTRL == 1))
        	AD_4V2_value = AD_4_temp_avg;  	
 }      	
 
@@ -299,8 +293,7 @@ void Execute(void)
        	//根据当前状态执行
        	
        	time_charge_10ms++;
-       	if(time_charge_10ms >= time_charge_total) time_charge_10ms = 0;//1s周期定时//modfied by LC 2015.08.03 23:15
-		time_charge_total = 100;//默认100 add by LC 2015.08.03 23:15
+       	if(time_charge_10ms >= 100) time_charge_10ms = 0;//1s周期定时
        	if(time_charge_10ms == 95 && sys_status != FREE)//定时采样 在900ms的位置定时采样,在free时需要发两个脉冲
        	{
        	       	if(AD12V6_FLAG == 0)//没有第一颗电池
@@ -331,8 +324,7 @@ void Execute(void)
        	/*单充模式,任意两路或一路以25%占空比充，占空 200ms/1s*/
        	if(sys_status == ALONE_CHARGE)
        	{
-       	       	LED_ON;
-				
+       	       	
        	       	if((AD_12V6_value < V_FULL_ADD) && (AD12V6_FLAG == 1))//第一颗慢充
        	       	{
        	       	       	if(time_charge_10ms >= 0 && time_charge_10ms < 25) //0 -- 20
@@ -358,7 +350,7 @@ void Execute(void)
        	       	       	       	P4V2_ON;
        	       	       	}
        	       	}
-       	       	
+       	       	LED_ON;
        	       	return;
        	}
        	
@@ -391,7 +383,6 @@ void Execute(void)
        	/*故障以及充满状态，P12V6或P8V4导通，占空 10ms/1s*/
        	if(sys_status == FALUT || sys_status == FULL)
        	{
-			time_charge_total = 250;//在full和fault状态下改为2.5s 避免过冲 add by LC 2015.08.03 23:14
        	       	if(sys_status == FALUT)
        	       	{
                	       	       	if(time_charge_10ms%50 == 0) LED_PORT = !LED_PORT;//故障闪动
@@ -407,7 +398,7 @@ void Execute(void)
 void main(void)
 {
        	uchar status_temp;
-     //  	uint AD_value_test;//add by LC 2015.07.20 14:11
+       	uint AD_value_test;//add by LC 2015.07.20 14:11
     //   Delay(100);
        	SysInit();
        	       	Delay(100);
@@ -471,18 +462,10 @@ void main(void)
        	       	       	       	       	}
 
        	       	       	       	}
-       	       	       	       	//全充判断  所有路电压均小于 V_FULL_ADD //使用最大值来作为全充，减少总的充电时间 modfied by LC 2015.08.03 23:30
-       	       	       	       	else if((AD_8V4_value<V_FULL_ADD) && (AD_4V2_value<V_FULL_ADD) && ((AD_12V6_value<V_FULL_ADD) || (AD12V6_FLAG == 0)))
+       	       	       	       	//全充判断  所有路电压均小于 V_FULL
+       	       	       	       	else if((AD_8V4_value<V_FULL_CHARGE) && (AD_4V2_value<V_FULL_CHARGE) && ((AD_12V6_value<V_FULL_CHARGE) || (AD12V6_FLAG == 0)))
        	       	       	       	{
-									    if(sys_status == FULL)//上一状态为full,为电压跌落的，必须判断是否有一路电压值小于V_FULL
-       	       	       	       	       	{
-       	       	       	       	       	       	if((AD_8V4_value<V_FULL) || (AD_4V2_value<V_FULL) || ((AD_12V6_value<V_FULL) && (AD12V6_FLAG == 1)))
-       	       	       	       	       	       	       	status_temp = FULL_CHARGE;
-       	       	       	       	       	}else
-										{
-											status_temp = FULL_CHARGE;
-										}
-       	       	       	       	       	
+       	       	       	       	       	status_temp = FULL_CHARGE;
        	       	       	       	}
        	       	       	       	//充满判断  所有电压均大于等于 V_FULL_ADD
        	       	       	       	else if((AD_8V4_value>=V_FULL_ADD) && (AD_4V2_value>=V_FULL_ADD) && ((AD_12V6_value>=V_FULL_ADD) || (AD12V6_FLAG == 0)))
@@ -514,8 +497,18 @@ void main(void)
        	       	       	       	       	
        	       	       	       	}
        	       	       	       	
+       	       	       	       	if(status_temp == last_status)//当前状态与上次状态相同，则状态值自加
+       	       	       	       	{
+       	       	       	       	       	status_count++;
+       	       	       	       	}
+       	       	       	       	
+       	       	       	       	if(status_temp != last_status)//当前状态与上次状态不同，则状态计数为1，并修改上次状态
+       	       	       	       	{
+       	       	       	       	       	status_count = 1;
+       	       	       	       	       	last_status = status_temp;
+       	       	       	       	}
        	       	       	       	//空缺态进入其他态,判断 3S模式 和 2S模式
-       	       	       	       	if((sys_status == FREE) && (status_temp != FREE))
+       	       	       	       	if((sys_status == FREE) && (status_temp != FREE) && (status_count >= STATUS_MAX))
        	       	       	       	{
        	       	       	       	       	//先将所有IO输出口置零，LED口除外
        	       	       	       	       	P12V6_OFF;
@@ -531,19 +524,24 @@ void main(void)
        	       	       	       	       	if(AD_12V6_value < V_FREE)//表示有3S
        	       	       	       	       	{
        	       	       	       	       	       	AD12V6_FLAG = 1;
-       	       	       	       	       	       	status_temp = PRE_CHARGE;//如果是3S模式，将系统状态设为PRE_CHARGE重新采集，避免LED乱闪
+       	       	       	       	       	       	status_temp = FULL;//如果是3S模式，将系统状态设为full重新采集，避免LED乱闪
        	       	       	       	       	}else
        	       	       	       	       	{
        	       	       	       	       	       	AD12V6_FLAG = 0;
        	       	       	       	       	}
        	       	       	       	}
        	       	       	       	
-       	       	       	       	sys_status = status_temp;
-       	       	       	       	       	       	       	       	
-       	       	       	       	if(sys_status == FREE)
+       	       	       	       	if((status_count >= STATUS_MAX))               	       	       	       	
        	       	       	       	{
-               	       	       	    AD12V6_FLAG = 0;//改为默认2S模式，避免从free状态到充电状态出现fault modfied by LC 2015.07.30 21:47
-       	       	       	       	    AD_12V6_value =  V_FREE;
+       	       	       	       	       	status_count = 0;
+       	       	       	       	       	sys_status = status_temp;
+       	       	       	       	}
+       	       	       	       	       	       	       	       	
+       	       	       	       	       	       	       	       	if(sys_status == FREE)
+       	       	       	       	{
+               	       	       	       	       	AD12V6_FLAG = 0;//改为默认2S模式，避免从free状态到充电状态出现fault modfied by LC 2015.07.30 21:47
+       	       	       	       	       //      	AD_12V6_value = V_PRE_CHARGE;
+       	       	       	       	       	AD_12V6_value =  V_FREE;
        	       	       	       	}
        	       	       	}
        	       	       	
